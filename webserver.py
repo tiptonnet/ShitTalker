@@ -294,7 +294,13 @@ def saveconfig():
 #    print("SaveConfig: ",str(E))
 #finally:
     return redirect("/")
-    
+
+@app.route('/errorlog', methods=["GET"])
+def errrolog():
+    file1 = open("error.log", "r")  # append mode
+    content = file1.read()
+    file1.close()    
+    return render_template('errorlog.html',content=content)
 
 @app.route('/confirmrestart', methods=["GET"])
 def ConfRestart():

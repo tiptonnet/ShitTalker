@@ -20,7 +20,7 @@ GPIO.setup(sensor, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 # Get configuration
 def traps(data):
     x = datetime.datetime.now()
-    print(x)
+    #print(x)
     file1 = open("error.log", "a")  # append mode
     file1.write(str(x)+" \n"+data+"\n")
     file1.close()

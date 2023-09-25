@@ -53,6 +53,7 @@
                     <input type="text" class="form-text" value="{{config[8]}}" name="sound_path" id="sound_path"> <br>
 
                     <input  class="btn btn-primary" type="submit" value="Save"> |
+                    <a href = "/errorlog"><button type="button" class="btn btn-primary">Error Log</button></a> |
                     <a href = "/confirmrestart"><button type="button" class="btn btn-primary">Restart Device</button></a> | 
                     <a href = "/confirmstop"><button type="button" class="btn btn-primary">Shutdown Device</button></a>
                 </form>
@@ -88,13 +89,11 @@
           let span = document.getElementById("music");
           let slider = document.getElementById("music_volume");
           console.log(slider.value)
-          span.textContent = slider.value+" Seconds";
       }
       function sound_update() {
           let span = document.getElementById("sound");
           let slider = document.getElementById("sound_volume");
           console.log(slider.value)
-          span.textContent = slider.value+" Seconds";
       }
       function duration_update() {
           let span = document.getElementById("shit");
