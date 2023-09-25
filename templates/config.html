@@ -43,6 +43,9 @@
                     <label for="sound_volume" class="form-label">Sound Volume: <span id ="sound">{{config[5]}}</span></label>
                     <input type="range" onchange = "sound_update()" class="form-range" min="0" max="1" step = "0.1" value="{{config[5]}}" title="{{config[5]}}" name="sound_volume" id="sound_volume"> <br>
 
+                    <label for="music_path" class="form-label">Play Music</label>
+                    <input {% if config[10] == "1" %}checked{% endif %} type="checkbox" id="play_music" name="play_music" value="1"> <br>
+
                     <label for="music_path" class="form-label">Music Path</label>
                     <input type="text" class="form-text" value="{{config[7]}}" name="music_path" id="music_path"> <br>
 

@@ -13,19 +13,11 @@ from urllib.parse import urlencode
 from fileinput import filename
 import platform
 print(platform.release())
-#print(platform.version())
+print(platform.version())
 OnPi = False
-if "raspi" in platform.release():
-    OnPi = True
-    print("This is a Raspberry Pi")
-    import RPi.GPIO as GPIO
-    GPIO.setmode(GPIO.BCM)
-    sensor = 23
-    GPIO.setup(sensor, GPIO.IN)
 
 app = Flask(__name__)
 
-inventory = {}
 CurrentPage = 1
 PerPage = 23
 pages = 0
@@ -53,8 +45,9 @@ def get_config():
         pin = item.getElementsByTagName('pin')[0].childNodes[0].data                                    #6
         music_path = item.getElementsByTagName('music_path')[0].childNodes[0].data                      #7
         sound_path = item.getElementsByTagName('sound_path')[0].childNodes[0].data                      #8
-        shit_duration = item.getElementsByTagName('shit_duration')[0].childNodes[0].data                #9
-    config = [itemsperpage,music_start_delay,sound_start_delay,delay_between_sounds,music_volume,sound_volume,pin,music_path,sound_path,shit_duration]    
+        shit_duration = item.getElementsByTagName('shit_duration')[0].childNodes[0].data
+        play_music = item.getElementsByTagName('play_music')[0].childNodes[0].data                #9
+    config = [itemsperpage,music_start_delay,sound_start_delay,delay_between_sounds,music_volume,sound_volume,pin,music_path,sound_path,shit_duration,play_music]    
     return config
 
 def save_config(data):
@@ -72,6 +65,7 @@ def save_config(data):
         root[7].text = data[7]
         root[8].text = data[8]
         root[9].text = data[9]
+        root[10].text = data[10]
         # create a new XML file with the new element
         tree.write('static/config.xml')
     except Exception as e:
@@ -277,6 +271,7 @@ def DeleteFile():
 @app.route('/save_config', methods=["POST"])
 def saveconfig():
     global message
+#try:
     config = get_config()
     config[0] = request.form['list_items']
     config[1] = request.form['music_start_delay']
@@ -288,8 +283,18 @@ def saveconfig():
     config[7] = request.form['music_path']
     config[8] = request.form['sound_path']
     config[9] = request.form['shit_duration']
+    try:
+        config[10] = request.form['play_music']
+    except:
+        config[10] = "0"
+        pass
+
     save_config(config)
+#except Exception as E:
+#    print("SaveConfig: ",str(E))
+#finally:
     return redirect("/")
+    
 
 @app.route('/confirmrestart', methods=["GET"])
 def ConfRestart():
