@@ -9,13 +9,13 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import platform
 #  Make sure this is a Raspberry before we load GPIO
-OnPi = True
-
+OnPi = False
+'''
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 sensor = 23
 GPIO.setup(sensor, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
+'''
 # Get configuration
 def get_config():
     # parse the XML file
@@ -42,9 +42,7 @@ config = get_config()
 # We need to know how many seconds have elapsed since motion trigger
 seconds_elapsed = float(config[1]) + float(config[2])
 music_elapsed = float(config[1]) + float(config[2])
-# Starting the mixer
-mixer.init(frequency=44100)
-# Loading the song
+
 def getMusic(path):
     music = []
     for root,d_names,f_names in os.walk(path):
@@ -52,21 +50,7 @@ def getMusic(path):
             music.append(root+"/"+file)
     return music
 
-music = getMusic(config[7])
-
-def get_song(music):
-    songs = len(music)
-    s = random.randint(0, songs-1)
-    song = music[s]
-    print(s,song)
-    return song
-
-
 Soundsplayed = []
-
-for i in range(mixer.get_num_channels()):
-    c = mixer.Channel(i)
-    c.set_volume(float(config[5]))
 
 def getsoundfx(path):
     sounds = []
@@ -114,6 +98,14 @@ def HasPlayed(sound):
     else:
         print(sounds,len(Soundsplayed))
         return True
+music = getMusic(config[7])
+
+def get_song(music):
+    songs = len(music)
+    s = random.randint(0, songs-1)
+    song = music[s]
+    print(s,song)
+    return song
 
 def get_sound():
     #print(sounds)
@@ -121,14 +113,14 @@ def get_sound():
     try:
         snd = mixer.Sound(soundfx[s])
         length = mutagen_length(soundfx[s])
-        #frequency = mutagen_frequency(soundfx[s])
+        frequency = mutagen_frequency(soundfx[s])
         length = round(length)
         #Reduce repeats
         if HasPlayed(s):
             get_sound()
             return False
         #print(s,soundfx[s],length+2,frequency)
-        return [snd,length,0]
+        return [snd,length,frequency]
     except Exception as e:
         print(str(e))
         return False
@@ -150,6 +142,12 @@ def PlayShit():
     global seconds_elapsed
     global music_elapsed
     song = get_song(music)
+    frequency = mutagen_frequency(song)
+    # Starting the mixer
+    mixer.init(frequency=frequency)
+    for i in range(mixer.get_num_channels()):
+        c = mixer.Channel(i)
+        c.set_volume(float(config[5]))
     mixer.music.load(song)
     # Setting the volume
     mixer.music.set_volume(float(config[4]))
