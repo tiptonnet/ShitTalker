@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+      <title>ShitTalker Music</title>
+      <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" >
+    <link rel="icon" type="image/x-icon" href="/static/shit-icon-12.jpg">
+    <meta charset="utf-8">
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="-1">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  </head>
+  <body>
+    <div style="border-radius: 25px; border: 2px solid #73AD21; padding: 5px; margin:10px "><br><br>
+        <div class="container">
+            
+            <a href = "/"><button type="button" class="btn btn-primary">Configuration</button></a> | 
+            <a href = "/sound/1"><button type="button" class="btn btn-primary">Sound Files</button></a>
+        </div>
+        <div class="container">
+            <h2>Music Files</h2>
+            <form action = "/success" method = "post" enctype="multipart/form-data">  
+                <input type="file" name="file" />
+                <input type="hidden" name="path" value = "/music/1" />  
+                <input type = "submit" value="Upload">  
+            </form> 
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td><a href = "/music/{{prevPage}}"><img id="/{{Item}}" src = "/static/images/back_16.png"></img></a> <strong>{{page}} of {{pages}}</strong> <a href = "/music/{{nextPage}}"><img id="/{{Item}}" src = "/static/images/next_16.png"></img></a></td>
+                    </tr>
+                    <tr>
+                        <td>File</td>
+                        <td>Actions</td>
+                    </tr>                    
+                </thead>
+                <tbody>
+                {% if music: %}
+                    {% for Item in music %}
+                    <tr>
+                        <td>{{Item}}</td>
+                        <td><img id="/{{Item}}" src = "/static/images/play.webp" width="32" height="32" onclick="PlaySound('/{{Item}}')"></img> | <img src = "/static/images/clearall-icon.png" width = "32" height="32" onclick="ConfirmDelete('/{{Item}}')"></img> </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td>No data available</td>
+                        <td></td>
+                    </tr>
+                {%endif%}       
+                </tbody>
+
+            </table>
+        </div>
+   </div>
+    <script>
+
+      function ConfirmDelete(name) {
+        if (confirm("Are you sure you want to Delete: " + name + "? This is permanent and can not be restored")) {
+            DeleteFile({ filename: name });
+        }
+      }
+      function PlaySound(file) {
+        button = document.getElementById(file)
+        button.src = "/static/images/stop.png"
+        let beat = new Audio(file);
+        console.log(button.onclick)
+        button.onclick = function() {
+            button.src = "/static/images/play.webp";
+            beat.pause();
+            button.onclick = function() {
+                button.src = "/static/images/stop.png";
+                PlaySound(file)
+            };
+        };
+        beat.play();
+      }
+      function DeleteFile(data) {
+        console.log("Sending data");
+        const XHR = new XMLHttpRequest();
+        const urlEncodedDataPairs = [];
+        // Turn the data object into an array of URL-encoded key/value pairs.
+        for (const [name, value] of Object.entries(data)) {
+            urlEncodedDataPairs.push(
+            `${encodeURIComponent(name)}=${encodeURIComponent(value)}`,
+            );
+        }
+        // Combine the pairs into a single string and replace all %-encoded spaces to
+        // the '+' character; matches the behavior of browser form submissions.
+        const urlEncodedData = urlEncodedDataPairs.join("&").replace(/%20/g, "+");
+        // Define what happens on successful data submission
+        XHR.onreadystatechange = () => {
+            if (XHR.readyState === 4) {
+                console.log(XHR.response);
+                alert(XHR.response);
+                location.reload();
+            }
+        };
+        // Define what happens in case of an error
+        XHR.addEventListener("error", (event) => {
+            alert("Oops! Something went wrong.");
+        });
+        // Set up our request
+        XHR.open("POST", "/DeleteFile");
+        // Add the required HTTP header for form data POST requests
+        XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        // Finally, send our data.
+        XHR.send(urlEncodedData);
+      }
+  </script>
+  </body>    
+</html> 

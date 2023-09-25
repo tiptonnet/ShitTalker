@@ -1,0 +1,12 @@
+<config>
+  <itemsperpage>25</itemsperpage>
+  <music_start_delay>5</music_start_delay>
+  <sound_start_delay>10</sound_start_delay>
+  <delay_between_sounds>4</delay_between_sounds>
+  <music_volume>0.15</music_volume>
+  <sound_volume>0.7</sound_volume>
+  <pin>123456</pin>
+  <music_path>static/music</music_path>
+  <sound_path>static/soundfx</sound_path>
+  <shit_duration>300</shit_duration>
+</config>
