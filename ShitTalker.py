@@ -10,13 +10,13 @@ import xml.etree.ElementTree as ET
 import platform
 import datetime
 #  Make sure this is a Raspberry before we load GPIO
-OnPi = False
-'''
+OnPi = True
+
 import RPi.GPIO as GPIO
 GPIO.setmode(GPIO.BCM)
 sensor = 23
 GPIO.setup(sensor, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-'''
+
 # Get configuration
 def traps(data):
     x = datetime.datetime.now()
