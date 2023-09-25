@@ -9,5 +9,5 @@
   <music_path>static/music</music_path>
   <sound_path>static/soundfx</sound_path>
   <shit_duration>300</shit_duration>
-  <play_music>1</play_music>
+  <play_music>0</play_music>
 </config>
